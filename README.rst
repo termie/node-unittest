@@ -23,6 +23,9 @@ Example
     assert.equal(this.example, 'example');
   };
 
+  var test = new ExampleTestCase();
+  test.run();
+
 You can, of course, do some of that a bit prettier syntactically if you are
 using any of the multitude of javascript class/inheritance tools, but that's
 the plain-old Javascript way.
