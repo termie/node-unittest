@@ -10,25 +10,29 @@ Example
 ::
 
   var unittest = require('unittest');
-  var assert = require('assert');
+  var sys = require('sys');
+  
+  var TestCase = unittest.TestCase;
 
-  var ExampleTestCase = function () { };
-  ExampleTestCase.prototype = new unittest.TestCase();
-
-  ExampleTestCase.setUp = function () {
-    this.example = 'example';
-  };
-
-  ExampleTestCase.testInitialized = function () {
-    assert.equal(this.example, 'example');
-  };
+  var ExampleTestCase = function () { TestCase.call(this) };
+  sys.inherits(ExampleTestCase, TestCase);
+  
+  ExampleTestCase.prototype.extend({
+    setUp: function () {
+      TestCase.setUp.call(this);
+      this.example = 'example';
+    },
+    testInitialized: function () {
+      this.assertEqual(this.example, 'example');
+    }
+  });
 
   var test = new ExampleTestCase();
   test.run();
 
 You can, of course, do some of that a bit prettier syntactically if you are
 using any of the multitude of javascript class/inheritance tools, but that's
-the plain-old Javascript way.
+pretty much the plain-old Javascript way.
 
 Additional reading:
 
@@ -38,9 +42,11 @@ Additional reading:
 Assertions
 ----------
 
-Oh, right, you don't call this.assert* at the moment, you just use the assert
-library. I'll probably add all the methods sooner or later though.
+All the this.assert* methods are direct proxies to the equivalents in `assert` 
 
+There is also a this.fail(message) that is actually assert.ok(false, message)
+
+You can also use the `assert` library directly, for now at least.
 
 Async Example
 -------------
@@ -50,8 +56,8 @@ work too) to let us know the test isn't done.
 
 ::
 
-  ExampleTestCase.testInitialized = function () {
-    assert.equal(this.example, 'example');
+  ExampleTestCase.prototype.testInitialized = function () {
+    this.assertEqual(this.example, 'example');
   
     var done = unittest.NotDone();
     setTimeout(function () { done.callback(true); }, 5000);
