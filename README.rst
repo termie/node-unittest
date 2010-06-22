@@ -13,6 +13,7 @@ Example
 -------
 
 ::
+
   // in core_unittest.js
 
   var sys = require('sys');
